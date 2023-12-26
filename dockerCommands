@@ -1,0 +1,1 @@
+docker build --tag first-django . //renaming my image to first-django
