@@ -34,3 +34,33 @@ def get_all_rows(doc_name: str, sheet_name: str = None) -> List[dict]:
   sh = settings.GSPREAD_CLIENT.open(doc_name)
   worksheet = sh.worksheet[sheet_name] if sheet_name else sh.get_worksheet(0)
   return worksheet.get_all_records()
+
+def get_worksheet(doc_name: str, sheet_name: str = None) -> gspread.worksheet.Worksheet:
+  """
+  Returns a worksheet object from a given Google Sheet document and sheet name.
+  """
+  sh = settings.GSPREAD_CLIENT.open(doc_name)
+  worksheet = sh.worksheet(sheet_name) if sheet_name else sh.get_worksheet(0)
+  return worksheet
+
+
+def create_row(doc_name: str,data: dict, sheet_name: str = None) -> None:
+  """
+  Inserts a new row with the given data into a given Google Sheet worksheet.
+  """
+  worksheet = get_worksheet(doc_name, sheet_name)
+  worksheet.append_row(list(data.values()))
+
+def update_row(doc_name: str,row: int, data: dict, sheet_name: str = None, ) -> None:
+  """
+  Updates an existing row with the given data into a given Google Sheet worksheet.
+  """
+  worksheet = get_worksheet(doc_name, sheet_name)
+  worksheet.update(f"A{row}:Z{row}", [list(data.values())])
+
+def delete_row(doc_name: str, row: int, sheet_name: str = None) -> None:
+  """
+  Deletes an existing row from a given Google Sheet worksheet.
+  """
+  worksheet = get_worksheet(doc_name, sheet_name)
+  worksheet.delete_row(row)
